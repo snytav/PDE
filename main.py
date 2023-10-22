@@ -48,7 +48,7 @@ ax.set_xlabel('$x$')
 ax.set_ylabel('$y$');
 
 def f(x):
-    return 0.
+    return 0.0 #np.exp(-x[0])
 
 def sigmoid(x):
     return 1. / (1. + np.exp(-x))
