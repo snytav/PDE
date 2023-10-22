@@ -93,7 +93,7 @@ def loss_function(W, x, y):
 
             func = f(input_point) # right part function
 
-            err_sqr = ((gradient_of_trial_dx + gradient_of_trial_d2y) - func)**2
+            err_sqr = ((gradient_of_trial_dx ) - func)**2
             loss_sum += err_sqr
 
     return loss_sum
