@@ -87,12 +87,13 @@ def loss_function(W, x, y):
             psy_t_jacobian = jacobian(psy_trial)(input_point, net_out)
             psy_t_hessian = jacobian(jacobian(psy_trial))(input_point, net_out)
 
+            gradient_of_trial_dx = psy_t_jacobian[0]
             gradient_of_trial_d2x = psy_t_hessian[0][0]
             gradient_of_trial_d2y = psy_t_hessian[1][1]
 
             func = f(input_point) # right part function
 
-            err_sqr = ((gradient_of_trial_d2x + gradient_of_trial_d2y) - func)**2
+            err_sqr = ((gradient_of_trial_dx + gradient_of_trial_d2y) - func)**2
             loss_sum += err_sqr
 
     return loss_sum
