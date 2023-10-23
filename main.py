@@ -26,11 +26,28 @@ dy = 1. / ny
 x_space = np.linspace(0, 1, nx)
 y_space = np.linspace(0, 1, ny)
 
+
+
+from convection_basic import linear_convection_solve
+
+u = np.ones(nx)  # numpy function ones()
+u[int(0.4 / dx):int(0.6/ dx + 1)] = 2  # setting u = 2 between 0.5 and 1 as per our I.C.s
+u,u2D = linear_convection_solve(u, 1.0,dx,dy,1.0,nx, 1.0, ny)
+fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+X, Y = np.meshgrid(x_space, y_space)
+surf = ax.plot_surface(X, Y, u2D, rstride=1, cstride=1, cmap=cm.viridis,
+        linewidth=0, antialiased=False)
+
+
+
 def f(x):
-    return np.exp(-x[1])
+    return 0.0 #np.exp(-x[1])
 
 def analytic_solution(x):
-     return f(x)
+    i = int(x[0]/dy)
+    k = int(x[1]/dx)
+    t = u2D[i][k]
+    return t
 #    return (1 / (np.exp(np.pi) - np.exp(-np.pi))) * \
 #    		np.sin(np.pi * x[0]) * (np.exp(np.pi * x[1]) - np.exp(-np.pi * x[1]))
 surface = np.zeros((ny, nx))
@@ -66,7 +83,7 @@ def neural_network_x(x):
     return np.dot(a1, W[1])
 
 def A(x):
-    return f(x)
+    return analytic_solution(x)
 
 
 def psy_trial(x, net_out):
