@@ -26,9 +26,13 @@ dy = 1. / ny
 x_space = np.linspace(0, 1, nx)
 y_space = np.linspace(0, 1, ny)
 
+def f(x):
+    return np.exp(-x[0])
+
 def analytic_solution(x):
-    return (1 / (np.exp(np.pi) - np.exp(-np.pi))) * \
-    		np.sin(np.pi * x[0]) * (np.exp(np.pi * x[1]) - np.exp(-np.pi * x[1]))
+     return f(x)
+#    return (1 / (np.exp(np.pi) - np.exp(-np.pi))) * \
+#    		np.sin(np.pi * x[0]) * (np.exp(np.pi * x[1]) - np.exp(-np.pi * x[1]))
 surface = np.zeros((ny, nx))
 
 for i, x in enumerate(x_space):
@@ -47,8 +51,7 @@ ax.set_zlim(0, 2)
 ax.set_xlabel('$x$')
 ax.set_ylabel('$y$');
 
-def f(x):
-    return 0.0 #np.exp(-x[0])
+
 
 def sigmoid(x):
     return 1. / (1. + np.exp(-x))
@@ -63,7 +66,7 @@ def neural_network_x(x):
     return np.dot(a1, W[1])
 
 def A(x):
-    return x[1] * np.sin(np.pi * x[0])
+    return f(x)
 
 
 def psy_trial(x, net_out):
