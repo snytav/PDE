@@ -27,7 +27,7 @@ x_space = np.linspace(0, 1, nx)
 y_space = np.linspace(0, 1, ny)
 
 def f(x):
-    return np.exp(-x[0])
+    return np.exp(-x[1])
 
 def analytic_solution(x):
      return f(x)
@@ -91,12 +91,13 @@ def loss_function(W, x, y):
             psy_t_hessian = jacobian(jacobian(psy_trial))(input_point, net_out)
 
             gradient_of_trial_dx = psy_t_jacobian[0]
+            gradient_of_trial_dy = psy_t_jacobian[1]
             gradient_of_trial_d2x = psy_t_hessian[0][0]
             gradient_of_trial_d2y = psy_t_hessian[1][1]
 
             func = f(input_point) # right part function
 
-            err_sqr = ((gradient_of_trial_dx ) - func)**2
+            err_sqr = ((gradient_of_trial_dy ) - func)**2
             loss_sum += err_sqr
 
     return loss_sum
