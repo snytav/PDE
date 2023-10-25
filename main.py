@@ -31,7 +31,7 @@ y_space = np.linspace(0, 1, ny)
 from convection_basic import linear_convection_solve
 
 u = np.ones(nx)  # numpy function ones()
-u[int(0.4 / dx):int(0.6/ dx + 1)] = 2  # setting u = 2 between 0.5 and 1 as per our I.C.s
+u[int(.2 / dx):int(0.5 / dx + 1)] = 2  # setting u = 2 between 0.5 and 1 as per our I.C.s
 u,u2D = linear_convection_solve(u, 1.0,dx,dy,1.0,nx, 1.0, ny)
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 X, Y = np.meshgrid(x_space, y_space)
@@ -46,6 +46,11 @@ def f(x):
 def analytic_solution(x):
     i = int(x[0]/dy)
     k = int(x[1]/dx)
+    if i == u2D.shape[0]:
+        i = u2D.shape[0] - 1
+    if k == u2D.shape[1]:
+        k = u2D.shape[1] - 1
+
     t = u2D[i][k]
     return t
 #    return (1 / (np.exp(np.pi) - np.exp(-np.pi))) * \
@@ -141,7 +146,7 @@ surface = np.zeros((ny, nx))
 
 for i, x in enumerate(x_space):
  for j, y in enumerate(y_space):
-     surface[i][j] = analytic_solution([x, y])
+     surface[i][j] = analytic_solution(np.array([x, y]))
 
 for i, x in enumerate(x_space):
  for j, y in enumerate(y_space):
