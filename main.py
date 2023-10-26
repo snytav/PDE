@@ -16,6 +16,18 @@ from matplotlib import pyplot as plt
 from matplotlib import pyplot, cm
 from mpl_toolkits.mplot3d import Axes3D
 # %matplotlib inline
+import autograd.numpy as npa
+
+def get_value(x):
+    if type(x) == npa.numpy_boxes.ArrayBox:
+        x = x._value
+        if type(x) == npa.numpy_boxes.ArrayBox:
+            x = get_value(x)
+        return x
+    else:
+        return x
+
+get_value_arr = np.vectorize(get_value)
 
 nx = 10
 ny = 10
@@ -44,6 +56,8 @@ def f(x):
     return 0.0 #np.exp(-x[1])
 
 def analytic_solution(x):
+    x = get_value(x)
+
     i = int(x[0]/dy)
     k = int(x[1]/dx)
     if i == u2D.shape[0]:
@@ -79,13 +93,18 @@ def sigmoid(x):
     return 1. / (1. + np.exp(-x))
 
 def neural_network(W, x):
-    a1 = sigmoid(np.dot(x, W[0]))
-    return np.dot(a1, W[1])
+    W0 = W[:2,:]
+    W1 = W[2].reshape(10,1)
+    a1 = sigmoid(np.dot(x, W0))
+    return np.dot(a1, W1)
 
 
 def neural_network_x(x):
-    a1 = sigmoid(np.dot(x, W[0]))
-    return np.dot(a1, W[1])
+    W0 = W[:2,:]
+    W1 = W[2].reshape(10,1)
+    a1 = sigmoid(np.dot(x, W0))
+    return np.dot(a1, W1)
+
 
 def A(x):
     return analytic_solution(x)
@@ -96,6 +115,7 @@ def psy_trial(x, net_out):
 
 
 def loss_function(W, x, y):
+    W = get_value(W)
     loss_sum = 0.
 
     for xi in x:
@@ -125,6 +145,7 @@ def loss_function(W, x, y):
     return loss_sum
 
 W = [npr.randn(2, 10), npr.randn(10, 1)]
+W = npr.randn(3,10);
 lmb = 0.001
 
 print(neural_network(W, np.array([1, 1])))
@@ -133,8 +154,8 @@ for i in range(100):
     loss_grad =  grad(loss_function)(W, x_space, y_space)
     loss = loss_function(W, x_space, y_space)
 
-    W[0] = W[0] - lmb * loss_grad[0]
-    W[1] = W[1] - lmb * loss_grad[1]
+    W = W - lmb * loss_grad
+    #W[1] = W[1] - lmb * loss_grad[1]
     print(i,loss)
 
 
