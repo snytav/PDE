@@ -1,8 +1,9 @@
-import numpy as np
+# import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator
 import torch
+import autograd.numpy as np
 
 vm = -5
 xmax = 4

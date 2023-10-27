@@ -19,22 +19,29 @@ from mpl_toolkits.mplot3d import Axes3D
 # %matplotlib inline
 from exact_solution import bella
 
-
-nx = 10
-ny = 10
+vm = -5
+xmax = 4
+nx = 8
+ny = 8
 
 dx = 1. / nx
 dy = 1. / ny
 
-x_space = np.linspace(0, 1, nx)
-y_space = np.linspace(0, 1, ny)
+x_space = np.linspace(0, xmax, nx)
+y_space = np.linspace(vm, -vm, ny)
 
+t_moment = 0.0
+
+from new_Belyeva import Belyeva_function
 def f(x):
-    x = torch.tensor(x)
-    return bella(x[0],1.0,x[1])
+    y = Belyeva_function(x[0],x[1],t_moment)
+    return y
 
 def analytic_solution(x):
      return f(x)
+
+def psy_analytic(x,net_out):
+    return f(x)
 #    return (1 / (np.exp(np.pi) - np.exp(-np.pi))) * \
 #    		np.sin(np.pi * x[0]) * (np.exp(np.pi * x[1]) - np.exp(-np.pi * x[1]))
 surface = np.zeros((ny, nx))
@@ -48,9 +55,9 @@ X, Y = np.meshgrid(x_space, y_space)
 surf = ax.plot_surface(X, Y, surface, rstride=1, cstride=1, cmap=cm.viridis,
         linewidth=0, antialiased=False)
 
-ax.set_xlim(0, 1)
-ax.set_ylim(0, 1)
-ax.set_zlim(0, 2)
+# ax.set_xlim(0, 1)
+# ax.set_ylim(0, 1)
+# ax.set_zlim(0, 2)
 
 ax.set_xlabel('$x$')
 ax.set_ylabel('$y$');
@@ -77,7 +84,7 @@ def psy_trial(x, net_out):
     return A(x) + x[0] * (1 - x[0]) * x[1] * (1 - x[1]) * net_out
 
 
-def loss_function(W, x, y):
+def loss_function(W, x, y,psy):
     loss_sum = 0.
 
     for xi in x:
@@ -90,7 +97,7 @@ def loss_function(W, x, y):
             net_out_jacobian = jacobian(neural_network_x)(input_point)
             net_out_hessian = jacobian(jacobian(neural_network_x))(input_point)
 
-            psy_t = psy_trial(input_point, net_out)
+            psy_t = psy(input_point, net_out)
             psy_t_jacobian = jacobian(psy_trial)(input_point, net_out)
             psy_t_hessian = jacobian(jacobian(psy_trial))(input_point, net_out)
 
@@ -99,21 +106,26 @@ def loss_function(W, x, y):
             gradient_of_trial_d2x = psy_t_hessian[0][0]
             gradient_of_trial_d2y = psy_t_hessian[1][1]
 
-            func = f(input_point) # right part function
+            # func = f(input_point) # right part function
 
-            err_sqr = ((gradient_of_trial_dx +  gradient_of_trial_dy ) - func)**2
+            err_sqr = ((gradient_of_trial_dx +  gradient_of_trial_dy ))**2
             loss_sum += err_sqr
 
     return loss_sum
 
-W = [npr.randn(2, 10), npr.randn(10, 1)]
-lmb = 0.001
+
+
+W = [npr.randn(2, nx), npr.randn(nx, 1)]
+
+ideal_loss = loss_function(W, x_space, y_space,psy_analytic)
+
+lmb = 1e-6  ## USUAL VALUE RESULTS IN INSTABILITY
 
 print(neural_network(W, np.array([1, 1])))
 
-for i in range(100):
-    loss_grad =  grad(loss_function)(W, x_space, y_space)
-    loss = loss_function(W, x_space, y_space)
+for i in range(50):
+    loss_grad =  grad(loss_function)(W, x_space, y_space,psy_trial)
+    loss = loss_function(W, x_space, y_space,psy_trial)
 
     W[0] = W[0] - lmb * loss_grad[0]
     W[1] = W[1] - lmb * loss_grad[1]
@@ -147,9 +159,9 @@ X, Y = np.meshgrid(x_space, y_space)
 surf = ax.plot_surface(X, Y, surface, rstride=1, cstride=1, cmap=cm.viridis,
        linewidth=0, antialiased=False)
 
-ax.set_xlim(0, 1)
-ax.set_ylim(0, 1)
-ax.set_zlim(0, 3)
+# ax.set_xlim(0, 1)
+# ax.set_ylim(0, 1)
+# ax.set_zlim(0, 3)
 
 ax.set_xlabel('$x$')
 ax.set_ylabel('$y$');
