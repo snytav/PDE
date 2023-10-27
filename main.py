@@ -29,7 +29,7 @@ dx = 1. / nx
 dy = 1. / ny
 
 x_space = np.linspace(0, xmax, nx)
-y_space = np.linspace(-vm, vm, ny)
+y_space = np.linspace(vm, -vm, ny)
 
 tmom = 0.0
 
@@ -43,9 +43,9 @@ def analytic_solution(x):
 #    		np.sin(np.pi * x[0]) * (np.exp(np.pi * x[1]) - np.exp(-np.pi * x[1]))
 surface = np.zeros((ny, nx))
 
-for i, x in enumerate(x_space):
-    for j, y in enumerate(y_space):
-        surface[i][j] = analytic_solution([x, y])
+for i, xi in enumerate(x_space):
+    for j, yi in enumerate(y_space):
+        surface[i][j] = Belyeva_function(xi,yi,tmom) #analytic_solution([x, y])
 
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 X, Y = np.meshgrid(x_space, y_space)
@@ -58,6 +58,8 @@ ax.set_zlim(0, 2)
 
 ax.set_xlabel('$x$')
 ax.set_ylabel('$y$');
+plt.show()
+qq  = 0
 
 
 
