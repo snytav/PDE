@@ -9,6 +9,7 @@ Original file is located at
 
 # Commented out IPython magic to ensure Python compatibility.
 import autograd.numpy as np
+import torch
 from autograd import grad, jacobian
 import autograd.numpy.random as npr
 
@@ -16,6 +17,8 @@ from matplotlib import pyplot as plt
 from matplotlib import pyplot, cm
 from mpl_toolkits.mplot3d import Axes3D
 # %matplotlib inline
+from exact_solution import bella
+
 
 nx = 10
 ny = 10
@@ -27,7 +30,8 @@ x_space = np.linspace(0, 1, nx)
 y_space = np.linspace(0, 1, ny)
 
 def f(x):
-    return np.exp(-x[1])
+    x = torch.tensor(x)
+    return bella(x[0],1.0,x[1])
 
 def analytic_solution(x):
      return f(x)
