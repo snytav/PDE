@@ -17,17 +17,25 @@ from matplotlib import pyplot, cm
 from mpl_toolkits.mplot3d import Axes3D
 # %matplotlib inline
 
-nx = 10
-ny = 10
+from new_Belyeva import Belyeva_function
+
+nx = 8
+ny = 8
+
+vm = -5
+xmax = 4
 
 dx = 1. / nx
 dy = 1. / ny
 
-x_space = np.linspace(0, 1, nx)
-y_space = np.linspace(0, 1, ny)
+x_space = np.linspace(0, xmax, nx)
+y_space = np.linspace(-vm, vm, ny)
+
+tmom = 0.0
+
 
 def f(x):
-    return np.exp(-x[1])
+    return Belyeva_function(x[0],x[1],tmom)
 
 def analytic_solution(x):
      return f(x)
@@ -102,7 +110,7 @@ def loss_function(W, x, y):
 
     return loss_sum
 
-W = [npr.randn(2, 10), npr.randn(10, 1)]
+W = [npr.randn(2, nx), npr.randn(nx, 1)]
 lmb = 0.001
 
 print(neural_network(W, np.array([1, 1])))
