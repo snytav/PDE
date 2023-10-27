@@ -17,8 +17,8 @@ from matplotlib import pyplot, cm
 from mpl_toolkits.mplot3d import Axes3D
 # %matplotlib inline
 
-nx = 10
-ny = 10
+nx = 8
+ny = 8
 
 dx = 1. / nx
 dy = 1. / ny
@@ -102,7 +102,7 @@ def loss_function(W, x, y):
 
     return loss_sum
 
-W = [npr.randn(2, 10), npr.randn(10, 1)]
+W = [npr.randn(2, nx), npr.randn(nx, 1)]
 lmb = 0.001
 
 print(neural_network(W, np.array([1, 1])))
