@@ -16,7 +16,7 @@ def Belyeva_function(x,v,t):
 
 
 if __name__ == '__main__':
-    N = 64
+    N = 8
     xmax = 4.0
     x = torch.linspace(0, xmax, N)
     v = torch.linspace(vm, -vm, N)
