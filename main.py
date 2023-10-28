@@ -62,6 +62,7 @@ surf = ax.plot_surface(X, Y, surface, rstride=1, cstride=1, cmap=cm.viridis,
 
 ax.set_xlabel('$x$')
 ax.set_ylabel('$y$');
+plt.title('Analytic solution')
 
 
 
@@ -121,7 +122,7 @@ W = [npr.randn(2, nx), npr.randn(nx, 1)]
 
 ideal_loss = loss_function(W, x_space, y_space,psy_analytic)
 
-lmb = 1e-2  ## USUAL VALUE RESULTS IN INSTABILITY
+lmb = 1e-3  ## USUAL VALUE RESULTS IN INSTABILITY
 
 print(neural_network(W, np.array([1, 1])))
 
