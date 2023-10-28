@@ -109,8 +109,9 @@ def loss_function(W, x, y,psy):
 
             # func = f(input_point) # right part function
 
-            err_sqr = ((gradient_of_trial_dx +  gradient_of_trial_dy ))**2
-            loss_sum += err_sqr
+            err_sqr = np.abs(gradient_of_trial_dx +  gradient_of_trial_dy )
+            if err_sqr > loss_sum:
+                loss_sum = err_sqr
 
     return loss_sum
 
@@ -120,13 +121,13 @@ W = [npr.randn(2, nx), npr.randn(nx, 1)]
 
 ideal_loss = loss_function(W, x_space, y_space,psy_analytic)
 
-lmb = 1e-6  ## USUAL VALUE RESULTS IN INSTABILITY
+lmb = 1e-3  ## USUAL VALUE RESULTS IN INSTABILITY
 
 print(neural_network(W, np.array([1, 1])))
 
 loss = loss_function(W, x_space, y_space,psy_trial)
 i = 0
-while loss > 1e-1:
+while loss > 1e-0:
     loss_grad =  grad(loss_function)(W, x_space, y_space,psy_trial)
     loss = loss_function(W, x_space, y_space,psy_trial)
 
@@ -188,5 +189,5 @@ ax.set_ylabel('$y$');
 plt.title('NN solution')
 plt.show()
 
-print(loss_function(W, x_space, y_space))
+print(loss_function(W, x_space, y_space,psy_trial))
 
