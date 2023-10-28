@@ -88,9 +88,10 @@ def psy_trial(x, net_out):
 
 def loss_function(W, x, y,psy):
     loss_sum = 0.
+    loss2D = np.zeros((x.shape[0],y.shape[0]))
 
-    for xi in x:
-        for yi in y:
+    for i,xi in enumerate(x):
+        for i,yi in enumerate(y):
 
             input_point = np.array([xi, yi])
 
@@ -111,10 +112,11 @@ def loss_function(W, x, y,psy):
             # func = f(input_point) # right part function
 
             err_sqr = np.abs(gradient_of_trial_dx +  gradient_of_trial_dy )
+           # loss2D[i][j] = err_sqr
             if err_sqr > loss_sum:
                 loss_sum = err_sqr
 
-    return loss_sum
+    return loss_sum #,loss2D
 
 
 
