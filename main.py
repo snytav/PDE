@@ -22,19 +22,20 @@ from exact_solution import bella
 vm = -5
 xmax = 4
 nx = 8
-ny = 8
+ny = nx
+
+c = 1.0
 
 dx = 1. / nx
 dy = 1. / ny
 
 x_space = np.linspace(0, xmax, nx)
-y_space = np.linspace(vm, -vm, ny)
+y_space = np.linspace(0, 1.0, ny)
 
-t_moment = 0.0
 
 from new_Belyeva import Belyeva_function
 def f(x):
-    y = Belyeva_function(x[0],x[1],t_moment)
+    y = Belyeva_function(x[0],c,x[1])
     return y
 
 def analytic_solution(x):
@@ -98,8 +99,8 @@ def loss_function(W, x, y,psy):
             net_out_hessian = jacobian(jacobian(neural_network_x))(input_point)
 
             psy_t = psy(input_point, net_out)
-            psy_t_jacobian = jacobian(psy_trial)(input_point, net_out)
-            psy_t_hessian = jacobian(jacobian(psy_trial))(input_point, net_out)
+            psy_t_jacobian = jacobian(psy)(input_point, net_out)
+            psy_t_hessian = jacobian(jacobian(psy))(input_point, net_out)
 
             gradient_of_trial_dx = psy_t_jacobian[0]
             gradient_of_trial_dy = psy_t_jacobian[1]
@@ -123,7 +124,7 @@ lmb = 1e-6  ## USUAL VALUE RESULTS IN INSTABILITY
 
 print(neural_network(W, np.array([1, 1])))
 
-for i in range(50):
+for i in range(100):
     loss_grad =  grad(loss_function)(W, x_space, y_space,psy_trial)
     loss = loss_function(W, x_space, y_space,psy_trial)
 
@@ -133,7 +134,7 @@ for i in range(50):
 
 
 
-print(loss_function(W, x_space, y_space))
+print(loss_function(W, x_space, y_space,psy_trial))
 
 surface2 = np.zeros((ny, nx))
 surface = np.zeros((ny, nx))
