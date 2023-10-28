@@ -119,6 +119,38 @@ def loss_function(W, x, y,psy):
     return loss_sum #,loss2D
 
 
+def loss_map(W, x, y,psy):
+    loss_sum = 0.
+    loss2D = np.zeros((x.shape[0],y.shape[0]))
+
+    for i,xi in enumerate(x):
+        for i,yi in enumerate(y):
+
+            input_point = np.array([xi, yi])
+
+            net_out = neural_network(W, input_point)[0]
+
+            net_out_jacobian = jacobian(neural_network_x)(input_point)
+            net_out_hessian = jacobian(jacobian(neural_network_x))(input_point)
+
+            psy_t = psy(input_point, net_out)
+            psy_t_jacobian = jacobian(psy)(input_point, net_out)
+            psy_t_hessian = jacobian(jacobian(psy))(input_point, net_out)
+
+            gradient_of_trial_dx = psy_t_jacobian[0]
+            gradient_of_trial_dy = psy_t_jacobian[1]
+            gradient_of_trial_d2x = psy_t_hessian[0][0]
+            gradient_of_trial_d2y = psy_t_hessian[1][1]
+
+            # func = f(input_point) # right part function
+
+            err_sqr = np.abs(gradient_of_trial_dx +  gradient_of_trial_dy )
+            loss2D[i][j] = err_sqr
+            if err_sqr > loss_sum:
+                loss_sum = err_sqr
+
+    return loss2D
+
 
 W = [npr.randn(2, nx), npr.randn(nx, 1)]
 
@@ -133,6 +165,7 @@ i = 0
 while loss > 1e-0:
     loss_grad =  grad(loss_function)(W, x_space, y_space,psy_trial)
     loss = loss_function(W, x_space, y_space,psy_trial)
+    loss2D = loss_map(W, x_space, y_space, psy_trial)
 
     W[0] = W[0] - lmb * loss_grad[0]
     W[1] = W[1] - lmb * loss_grad[1]
@@ -142,6 +175,8 @@ while loss > 1e-0:
 
 
 print(loss_function(W, x_space, y_space,psy_trial))
+
+loss2D = loss_map(W,x_space, y_space,psy_trial)
 
 surface2 = np.zeros((ny, nx))
 surface = np.zeros((ny, nx))
@@ -164,7 +199,7 @@ print('difference between analytic and NN ',diff)
 
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 X, Y = np.meshgrid(x_space, y_space)
-surf = ax.plot_surface(X, Y, surface, rstride=1, cstride=1, cmap=cm.viridis,
+surf = ax.plot_surface(X, Y, loss2D, rstride=1, cstride=1, cmap=cm.viridis,
        linewidth=0, antialiased=False)
 
 # ax.set_xlim(0, 1)
@@ -173,7 +208,7 @@ surf = ax.plot_surface(X, Y, surface, rstride=1, cstride=1, cmap=cm.viridis,
 
 ax.set_xlabel('$x$')
 ax.set_ylabel('$y$');
-plt.title('Analytic solution')
+plt.title('Loss function map')
 plt.show()
 
 
