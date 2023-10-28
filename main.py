@@ -124,13 +124,16 @@ lmb = 1e-6  ## USUAL VALUE RESULTS IN INSTABILITY
 
 print(neural_network(W, np.array([1, 1])))
 
-for i in range(100):
+loss = loss_function(W, x_space, y_space,psy_trial)
+i = 0
+while loss > 1e-1:
     loss_grad =  grad(loss_function)(W, x_space, y_space,psy_trial)
     loss = loss_function(W, x_space, y_space,psy_trial)
 
     W[0] = W[0] - lmb * loss_grad[0]
     W[1] = W[1] - lmb * loss_grad[1]
     print(i,loss)
+    i = i + 1
 
 
 
