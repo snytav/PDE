@@ -82,7 +82,7 @@ def A(x):
 
 
 def psy_trial(x, net_out):
-    return A(x) + x[0] * (1 - x[0]) * x[1] * (1 - x[1]) * net_out
+    return A(x) + x[0] * (xmax - x[0]) * x[1] * (1 - x[1]) * net_out
 
 
 def loss_function(W, x, y,psy):
@@ -121,7 +121,7 @@ W = [npr.randn(2, nx), npr.randn(nx, 1)]
 
 ideal_loss = loss_function(W, x_space, y_space,psy_analytic)
 
-lmb = 1e-3  ## USUAL VALUE RESULTS IN INSTABILITY
+lmb = 1e-2  ## USUAL VALUE RESULTS IN INSTABILITY
 
 print(neural_network(W, np.array([1, 1])))
 
@@ -180,9 +180,9 @@ X, Y = np.meshgrid(x_space, y_space)
 surf = ax.plot_surface(X, Y, surface2, rstride=1, cstride=1, cmap=cm.viridis,
        linewidth=0, antialiased=False)
 
-ax.set_xlim(0, 1)
-ax.set_ylim(0, 1)
-ax.set_zlim(0, 3)
+# ax.set_xlim(0, 1)
+# ax.set_ylim(0, 1)
+# ax.set_zlim(0, 3)
 
 ax.set_xlabel('$x$')
 ax.set_ylabel('$y$');
