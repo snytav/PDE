@@ -85,7 +85,7 @@ def boundary(x):
     return x[0] * (xmax - x[0]) * x[1] * (1 - x[1])
 
 def psy_trial(x, net_out):
-    return A(x) +  boundary(x,net_out) * net_out
+    return A(x) +  boundary(x) * net_out
 
 
 def loss_function(W, x, y,psy):
@@ -113,8 +113,9 @@ def loss_function(W, x, y,psy):
 
             # func = f(input_point) # right part function
 
-            err_sqr = np.abs(gradient_of_trial_dx +  gradient_of_trial_dy )
+            err_sqr = np.abs(gradient_of_trial_dx +  gradient_of_trial_dy )**2
            # loss2D[i][j] = err_sqr
+            loss_sum += err_sqr
             if err_sqr > loss_sum:
                 loss_sum = err_sqr
 
