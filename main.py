@@ -81,9 +81,11 @@ def neural_network_x(x):
 def A(x):
     return f(x)
 
+def boundary(x):
+    return x[0] * (xmax - x[0]) * x[1] * (1 - x[1])
 
 def psy_trial(x, net_out):
-    return A(x) + x[0] * (xmax - x[0]) * x[1] * (1 - x[1]) * net_out
+    return A(x) +  boundary(x,net_out) * net_out
 
 
 def loss_function(W, x, y,psy):
